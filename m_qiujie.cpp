@@ -1,5 +1,5 @@
 #include"pch.h"
-/*#include<stdlib.h>
+#include<stdlib.h>
 #include<iostream>
 #include<fstream>
 #include <stdio.h>
@@ -14,7 +14,7 @@ int m_shudu[N + 2][N + 1];
 int m_solutionID = 0;
 int flag = 0;
 //第一维0行，1列，2块
-int set[3][10][10];
+int set[3][11][11];
 int kuai[11][11];
 ifstream infile;
 ofstream outfile;
@@ -68,13 +68,12 @@ int main(void)
 	while (!infile.eof())
 	{
 		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 10; j++)
-				for (int k = 0; k < 10; k++)
-					set[i][j][k] = 1;
+			for (int j = 0; j <= 10; j++)
+				for (int k = 0; k <= 10; k++)
+					set[i][j][k] = 0;
 		memset(m_shudu, 0, sizeof(m_shudu));
 		memset(m_searchNode, 0, sizeof(m_searchNode));
 		m_searchLength = 0;
-		count++;
 		for (int i = 1; i != 10; i++)
 		{
 			for (int j = 1; j != 10; j++)
@@ -90,12 +89,20 @@ int main(void)
 					m_searchNode[m_searchLength].row = i;
 					m_searchNode[m_searchLength].col = j;
 				}
+				else
+				{
+					set[0][i][m_shudu[i][j]] = 1;
+					set[1][j][m_shudu[i][j]] = 1;
+					set[2][kuai[i][j]][m_shudu[i][j]] = 1;
+				}
 			}
 			if (infile.eof()) break;
 		}
-		flag = 0;
-		solve(1, count);
 		if (infile.eof()) break;
+		flag = 0;
+		count++;
+		solve(1, count);
+
 	}
 	printf("程序运行时间为 %f ms\n", 1000 * static_cast<float>(clock() - t) / CLOCKS_PER_SEC);
 }
@@ -103,7 +110,7 @@ int main(void)
 void solve(int searchNodeID, int count)
 {
 
-	if (m_searchLength + 1 == searchNodeID && flag == 0)
+	if (m_searchLength + 1 == searchNodeID)
 	{
 		m_solutionID++;
 		writeFile(count);
@@ -112,55 +119,38 @@ void solve(int searchNodeID, int count)
 	}
 	int row = m_searchNode[searchNodeID].row;
 	int col = m_searchNode[searchNodeID].col;
-
+	bool isSearch = false;
 	for (int i = 1; i != 10; i++)
 	{
-		m_shudu[row][col] = i;
+
+
 		if (isOK(row, col, i))
 		{
+			isSearch = true;
+			m_shudu[row][col] = i;
+			set[0][row][i] = 1;
+			set[1][col][i] = 1;
+			set[2][kuai[row][col]][i] = 1;
 
-			for (int j = 1; j < 10; j++)
-			{
-				if (j == row) continue;
-				set[0][j][i] = 0;
-			}
-			for (int j = 1; j < 10; j++)
-			{
-				if (j == col) continue;
-				set[1][j][i] = 0;
-			}
-			for (int j = 1; j < 10; j++)
-			{
-				if (j == kuai[row][col]) continue;
-				set[2][j][i] = 0;
-			}
 			solve(searchNodeID + 1, count);
-
-			//row = m_searchNode[searchNodeID + 1].row;
-			//col = m_searchNode[searchNodeID + 1].col;
-			//m_shudu[row][col] = 0;
-			for (int j = 1; j < 10; j++)
-			{
-				if (j == row) continue;
-				set[0][j][i] = 1;
-			}
-			for (int j = 1; j < 10; j++)
-			{
-				if (j == col) continue;
-				set[1][j][i] = 1;
-			}
-			for (int j = 1; j < 10; j++)
-			{
-				if (j == kuai[row][col]) continue;
-				set[2][j][i] = 1;
-			}
+		}
+		if (isSearch)
+		{
+			isSearch = false;
+			if (flag) return;
+			row = m_searchNode[searchNodeID + 1].row;
+			col = m_searchNode[searchNodeID + 1].col;
+			m_shudu[row][col] = 0;
+			set[0][row][i] = 0;
+			set[1][col][i] = 0;
+			set[2][kuai[row][col]][i] = 0;
 		}
 	}
 }
 
 int isOK(int row, int col, int num)
 {
-	if (set[0][row][num] == 1 && set[1][col][num] == 1 && set[2][kuai[row][col]][num] == 1) return 1;
+	if (set[0][row][num] == 0 && set[1][col][num] == 0 && set[2][kuai[row][col]][num] == 0) return 1;
 	else return 0;
 }
 
@@ -181,4 +171,4 @@ void writeFile(int id)
 		a[count_a++] = '\n';
 	}
 	outfile << a;
-}*/
+}
