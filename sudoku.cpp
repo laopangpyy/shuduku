@@ -17,6 +17,7 @@ void ShuDu::SolveShuDu(char infile[])
 	FILE *fp ;
 	
 	State_Solve = fopen_s(&fp,infile , "r");
+	if (State_Solve != 0) return;
 	ofstream Out_SolveShuDu("sudoku.txt");
 
 	char old_data[100];
