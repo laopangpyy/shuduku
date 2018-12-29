@@ -11,18 +11,19 @@ int main(int argc, char**argv)
 {
 	ShuDu test;
 	int num=0;
-	int length = strlen(argv[2]);
+	int length;
 	if (argc == 3 && strcmp(argv[1], "-c") == 0)
 	{
+		length = strlen(argv[2]);
 		for (int i = 0; i < length; i++)
 		{
 			if (argv[2][i] >= '0'&&argv[2][i] <= '9')
 			{
-				num += ((argv[2][i] - '0')*pow(10, length - i - 1));
+				num += (int)((argv[2][i] - '0')*pow(10, length - i - 1));
 			}
 			else
 			{
-				cout << "生成终局数量需为数字！" << endl;
+				cout << "生成终局数量不合法！" << endl;
 				return 0;
 			}
 
