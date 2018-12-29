@@ -8,7 +8,7 @@ public:
 	void Solve(int r, int c);
 	void InputShuDu(int row, char *save);
 	int State_Create = 0;
-	int State_Solve = 0;
+	int State_Solve = 1;
 
 //private:
 	int set_security[3][10][10] = {0};
