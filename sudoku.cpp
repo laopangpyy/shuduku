@@ -17,7 +17,11 @@ void ShuDu::SolveShuDu(char infile[])
 	FILE *fp ;
 	
 	State_Solve = fopen_s(&fp,infile , "r");
-	if (State_Solve != 0) return;
+	if (State_Solve != 0) 
+	{
+		cout << "找不到你输入的文件！"<<endl;
+		return; 
+	}
 	ofstream Out_SolveShuDu("sudoku.txt");
 	Out_SolveShuDu.clear();
 
