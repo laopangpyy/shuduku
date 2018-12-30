@@ -19,6 +19,7 @@ void ShuDu::SolveShuDu(char infile[])
 	State_Solve = fopen_s(&fp,infile , "r");
 	if (State_Solve != 0) return;
 	ofstream Out_SolveShuDu("sudoku.txt");
+	Out_SolveShuDu.clear();
 
 	char old_data[100];
 	int count = 0;//输入的行数
@@ -62,6 +63,7 @@ void ShuDu::SolveShuDu(char infile[])
 			memset(set_security, 0, sizeof(set_security));
 		}
 	}
+	Out_SolveShuDu.close();
 	printf("程序运行时间为 %f ms\n", 1000 * static_cast<float>(clock() - t) / CLOCKS_PER_SEC);
 }
 void ShuDu::InputShuDu(int row, char *old_data)
@@ -131,16 +133,20 @@ int ShuDu::CreateShuDu(int n)
 	
 	ofstream outFile;
 	outFile.open("sudoku.txt");
+	outFile.clear();
 
 	if (n <= 0 || n > 1000000)
 	{
 		State_Create = -1;
 		return 0;
 	}
-	int count_output = 0;
+	int count_output = -1;
 	int count = 0;    //生成数独数目
-	char* output = (char*)malloc(200 * n * sizeof(char));
-	memset(output, '\0', sizeof(output));
+	int N;
+	//if (count != 1) N = 200 * n;
+	//else N = 161;
+	char* output = (char*)malloc(200*n* sizeof(char));
+	memset(output, '\0', 200*n*sizeof(char));
 	
 	int source[9] = { 0, 3, 6, 1, 4, 7, 2, 5, 8 };
 	for (int i = 0; i < 6 && n; i++)
@@ -165,15 +171,15 @@ int ShuDu::CreateShuDu(int n)
 
 					for (int c = 0; c < 9; c++)
 					{
-						output[count_output++] = row[(c + source[r]) % 9];
+						output[++count_output] = row[(c + source[r]) % 9];
 						if (c != 8)
-							output[count_output++] = ' ';
+							output[++count_output] = ' ';
 					}
-					if (count != n || (count == n && r != 8))
-						output[count_output++] = '\n';
+					//if (count != n || (count == n && r != 8))
+						output[++count_output] = '\n';
 				}
 				if (count != n)
-					output[count_output++] = '\n';
+					output[++count_output] = '\n';
 				if (count == n)
 				{
 					outFile << output;
